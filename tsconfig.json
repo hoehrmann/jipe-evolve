@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "target": "es6",
+    "module": "commonjs",
+    "sourceMap": true,
+    "outDir": "out/",
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "noImplicitReturns": true,
+
+    "lib": [
+      "es5",
+      "es2015.generator",
+      "es2015.iterable",
+      "es2015.collection",
+      "es2015.core",
+      "dom"
+    ]
+  },
+  "typedocOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "mode": "file",
+    "out": "docs",
+    "theme": "minimal",
+    "exclude": "src/test",
+    "excludePrivate": true,
+    "excludeNotExported": true,
+    "excludeExternals": true,
+    "externalPattern": "node_modules",
+    "stripInternal": true
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "name": "tsevolve",
+  "version": "0.0.1",
+  "description": "tsevolve",
+  "main": "src/jipe-evolve.ts",
+  "author": "Bjoern Hoehrmann",
+  "license": " GPL-3.0-or-later",
+  "homepage": "https://github.com/hoehrmann/tsevolve",
+  "bugs": "https://github.com/hoehrmann/tsevolve/issues",
+  "repository": {
+    "url": "https://github.com/hoehrmann/tsevolve",
+    "type": "git"
+  },
+  "keywords": [
+    "genetic-algorithm",
+    "evolutionary-algorithm"
+  ],
+  "bin": {
+    "jipe-evolve-textchanges": "out/jipe-evolve-textchanges.js",
+    "jipe-evolve-uncrustify": "out/jipe-evolve-uncrustify.js",
+    "jipe-evolve-clang-format": "out/jipe-evolve-clang-format.js",
+    "jipe-evolve-prettier": "out/jipe-evolve-prettier.js",
+    "jipe-evolve-options": "out/jipe-evolve-options.js",
+    "jipe-evolve": "out/jipe-evolve.js"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "printWidth": 70,
+    "singleQuote": true,
+    "quoteProps": "consistent",
+    "parser": "typescript",
+    "endOfLine": "lf",
+    "trailingComma": "es5"
+  },
+  "types": "out/*.d.ts",
+  "dependencies": {
+    "@types/better-sqlite3": "^5.2.3",
+    "@types/through2": "^2.0.34",
+    "@types/traverse": "^0.6.32",
+    "bluebird": "^3.5.4",
+    "command-line-args": "^5.1.0",
+    "diff": "^4.0.1",
+    "express": "^4.16.4",
+    "fast-diff": "^1.2.0",
+    "json-stable-stringify": "^1.0.1",
+    "node-jipe": "../node-jipe",
+    "prettier": "^1.17.0",
+    "split2": "^3.1.1",
+    "sql-template-strings": "^2.2.2",
+    "sqlite": "^3.0.3",
+    "sqlite3": "^4.0.6",
+    "table": "^5.2.3",
+    "through2": "^3.0.1",
+    "tmp": "^0.1.0",
+    "traverse": "^0.6.6"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.26",
+    "@types/command-line-args": "^5.0.0",
+    "@types/express": "^4.16.1",
+    "@types/json-stable-stringify": "^1.0.32",
+    "@types/node": "^11.11.7",
+    "@types/prettier": "^1.16.3",
+    "@types/split2": "^2.1.6",
+    "@types/sqlite3": "^3.1.5",
+    "@types/table": "^4.0.5",
+    "@types/tmp": "^0.1.0",
+    "@types/typescript": "^2.0.0",
+    "@types/yaml": "^1.0.2",
+    "typedoc": "^0.14.2",
+    "typescript": "^3.3.4000"
+  }
+}

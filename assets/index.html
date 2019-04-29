@@ -1,0 +1,245 @@
+<!DOCTYPE HTML>
+<link rel=stylesheet href='/datatables.net-dt/css/jquery.dataTables.css'>
+<script src='/jquery/dist/jquery.js'></script>
+<script src='/datatables.net/js/jquery.dataTables.js'></script>
+
+<script>
+
+function dtfromsql(sql) {
+
+  var target = document.currentScript;
+
+  fetch('sql', {
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": JSON.stringify({
+      "query": sql
+    })
+  }).then(function(fetched) {
+
+    fetched.json().then(result => {
+
+      var table = document.createElement('table');
+      var tr = document.createElement('tr');
+      table.appendChild(tr);
+
+      result.columns.forEach(x => {
+        var th = document.createElement('th');
+        th.textContent = x;
+        tr.appendChild(th);
+      });
+
+      result.rows.forEach(x => {
+        var tr = document.createElement('tr');
+        x.forEach(y => {
+          var td = document.createElement('td');
+          td.textContent = y;
+          tr.appendChild(td);
+        });
+
+        table.appendChild(tr);
+      });
+
+//      document.insertBefore(table, target);
+      document.body.appendChild(table);
+/*
+      $(document).ready(function() {
+        $(table).DataTable();
+      });
+*/
+    });
+
+  });
+}
+</script>
+
+<h1>tsevolve</h1>
+
+<script>
+
+dtfromsql(`
+
+  WITH
+  ranked_by_metric AS (
+    SELECT
+      s.solution_id AS solution_id,
+      m.json_path AS json_path,
+      percent_rank() OVER (
+        PARTITION BY m.json_path
+        ORDER BY m.value
+      ) AS p
+    FROM
+      solution s
+        INNER JOIN metric m 
+          ON (s.solution_id = m.solution_id)
+    GROUP BY
+      s.solution_id,
+      m.json_path
+  ),
+  average_percent_rank AS (
+    SELECT
+      solution_id,
+      AVG(p) AS average_percent_rank
+    FROM
+      ranked_by_metric
+    GROUP BY
+      solution_id
+    ORDER BY
+      2 DESC
+  )
+  SELECT
+    *
+  FROM
+    average_percent_rank
+  LIMIT
+    10
+
+`);
+</script>
+
+<script>
+dtfromsql(`
+
+WITH
+ranked_by_metric AS (
+  SELECT
+    s.solution_id AS solution_id,
+    m.json_path AS json_path,
+    percent_rank() OVER (
+      PARTITION BY m.json_path
+      ORDER BY m.value
+    ) AS p
+  FROM
+    solution s
+      INNER JOIN metric m 
+        ON (s.solution_id = m.solution_id)
+  GROUP BY
+    s.solution_id,
+    m.json_path
+),
+average_percent_rank AS (
+  SELECT
+    solution_id,
+    AVG(p) AS average_percent_rank
+  FROM
+    ranked_by_metric
+  GROUP BY
+    solution_id
+  ORDER BY
+    2 DESC
+)
+SELECT
+  t.fullkey,
+  t.value,
+  MAX(avg_pct.average_percent_rank)
+FROM
+  solution s
+    INNER JOIN json_tree(s.solution) t
+    INNER JOIN average_percent_rank avg_pct
+      ON (avg_pct.solution_id = s.solution_id)
+WHERE
+  t.type NOT IN ('array', 'object')  
+GROUP BY
+  t.fullkey,
+  t.value
+ORDER BY
+  3 DESC
+
+
+`);
+
+</script>
+
+<script>
+
+dtfromsql(`
+  WITH
+  ranked_by_metric AS (
+    SELECT
+      s.solution_id AS solution_id,
+      m.json_path AS json_path,
+      percent_rank() OVER (
+        PARTITION BY m.json_path
+        ORDER BY m.value
+      ) AS p
+    FROM
+      solution s
+        INNER JOIN metric m 
+          ON (s.solution_id = m.solution_id)
+    GROUP BY
+      s.solution_id,
+      m.json_path
+  ),
+  average_percent_rank AS (
+    SELECT
+      solution_id,
+      AVG(p) AS average_percent_rank
+    FROM
+      ranked_by_metric
+    GROUP BY
+      solution_id
+    ORDER BY
+      2 DESC
+  ),
+  winner AS (
+    SELECT
+      solution_id
+    FROM
+      average_percent_rank
+    LIMIT
+      1
+  ),
+  metric_count AS (
+    SELECT
+      json_path,
+      COUNT(*) AS metric_count
+    FROM
+      metric
+    GROUP BY
+      json_path
+  ),
+  foo AS (
+    SELECT
+      value,
+      metric.json_path AS json_path,
+      NTH_VALUE(value, metric_count.metric_count / 2)
+      OVER ( PARTITION BY metric.json_path
+      ORDER BY
+        value DESC
+      ROWS BETWEEN
+        UNBOUNDED PRECEDING
+        AND
+        UNBOUNDED FOLLOWING
+      ) AS median
+      FROM
+        metric
+        INNER JOIN metric_count ON (metric_count.json_path = metric.json_path)
+  )
+  SELECT
+    foo.json_path, min(foo.value), median, max(foo.value), wm.value AS winner_value, printf('%.0f%%', 100 * max(foo.value) / wm.value) as d
+    , printf('%.0f%%', 100 * median / wm.value) as d_m
+  FROM
+    foo
+      INNER JOIN winner
+      INNER JOIN metric wm ON (wm.solution_id = winner.solution_id
+        AND wm.json_path = foo.json_path)
+  GROUP BY
+    foo.json_path
+  ORDER BY
+    0+d DESC
+`);
+
+
+</script>
+
+
+<script>
+
+dtfromsql(`
+select count(*) from solution
+`);
+
+
+</script>
