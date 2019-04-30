@@ -1,14 +1,14 @@
 {
-  "name": "tsevolve",
+  "name": "jipe-evolve",
   "version": "0.0.1",
-  "description": "tsevolve",
+  "description": "jipe-evolve",
   "main": "src/jipe-evolve.ts",
   "author": "Bjoern Hoehrmann",
   "license": " GPL-3.0-or-later",
-  "homepage": "https://github.com/hoehrmann/tsevolve",
-  "bugs": "https://github.com/hoehrmann/tsevolve/issues",
+  "homepage": "https://github.com/hoehrmann/jipe-evolve",
+  "bugs": "https://github.com/hoehrmann/jipe-evolve/issues",
   "repository": {
-    "url": "https://github.com/hoehrmann/tsevolve",
+    "url": "https://github.com/hoehrmann/jipe-evolve",
     "type": "git"
   },
   "keywords": [
